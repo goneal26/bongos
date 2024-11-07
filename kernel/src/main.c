@@ -1,5 +1,6 @@
 #include "limine.h"
 #include "memory.h"
+#include "graphics.h"
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -62,12 +63,13 @@ void kmain(void) {
     // Fetch the first framebuffer.
     struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
 
-    // Note: we assume the framebuffer model is RGB with 32-bit pixels.
-    for (size_t i = 0; i < 100; i++) {
-        volatile uint32_t *fb_ptr = framebuffer->address;
-        fb_ptr[i * (framebuffer->pitch / 4) + i] = 0xffffff;
-    }
-
+    // graphics functions
+    init_screen(framebuffer);
+    
+    fillrect(25, 150, 50, 50, WHITE); // white rectangle!
+    
     // We're done, just hang...
     hcf();
 }
+
+// TODO retab the damn file!
