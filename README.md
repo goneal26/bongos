@@ -1,10 +1,10 @@
-# Limine C Template
+# BongOS -> A 64-bit hobby operating system
 
-This repository will demonstrate how to set up a basic kernel in C using Limine.
+*like the drum, not like the glass thing...*
 
-## How to use this?
+Built off of the Limine bootloader C template. 
 
-### Dependencies
+## Dependencies
 
 Any `make` command depends on GNU make (`gmake`) and is expected to be run using it. This usually means using `make` on most GNU/Linux distros, or `gmake` on other non-GNU systems.
 
@@ -12,13 +12,13 @@ It is recommended to build this project using a standard UNIX-like system, using
 
 Additionally, building an ISO with `make all` requires `xorriso`, and building a HDD/USB image with `make all-hdd` requires `sgdisk` (usually from `gdisk` or `gptfdisk` packages) and `mtools`.
 
-### Architectural targets
+## Architectural targets
 
 The `KARCH` make variable determines the target architecture to build the kernel and image for.
 
 The default `KARCH` is `x86_64`. Other options include: `aarch64`, `loongarch64`, and `riscv64`.
 
-### Makefile targets
+## Makefile targets
 
 Running `make all` will compile the kernel (from the `kernel/` directory) and then generate a bootable ISO image.
 
