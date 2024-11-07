@@ -21,6 +21,4 @@ uint64_t max_height(void);
 void putpixel(uint64_t x, uint64_t y, uint32_t color);
 void fillrect(uint64_t x, uint64_t y, uint64_t w, uint64_t h, uint32_t color);
 
-void putchar(size_t where, char ch, uint32_t fgcolor, uint32_t bgcolor);
-
 #endif

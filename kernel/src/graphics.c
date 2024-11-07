@@ -37,15 +37,11 @@ void putpixel(uint64_t x, uint64_t y, uint32_t color) {
 void fillrect(uint64_t x, uint64_t y, uint64_t w, uint64_t h, uint32_t color) {
   size_t offset = y * (screen.pitch / 4) + x; // idx for top left corner
 
-  for (uint64_t xcoord = 0; xcoord < w; xcoord++) {
-    for (uint64_t ycoord = 0; ycoord < h; ycoord++) {
-      screen.pixels[offset + ycoord] = color;
+  for (uint64_t ycoord = 0; ycoord < h; ycoord++) {
+    for (uint64_t xcoord = 0; xcoord < w; xcoord++) {
+      screen.pixels[offset + xcoord] = color;
     }
     offset += screen.pitch / 4;
   }
 }
 
-// void putchar(uint64_t x, uint64_t y, char ch, uint32_t fgcolor, uint32_t bgcolor) {
-//   // TODO
-//   return;
-// }

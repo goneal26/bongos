@@ -65,9 +65,21 @@ void kmain(void) {
 
   // graphics functions
   init_screen(framebuffer);
-    
-  fillrect(25, 150, 50, 50, WHITE); // white rectangle!
-    
+
+  fillrect(0, 0, max_width(), max_height(), WHITE);
+
+  bool is_red = false;
+  for (uint64_t y = 0; y < max_height() - 15; y += 15) {
+    for (uint64_t x = 0; x < max_width() - 10; x += 10) {
+      if (is_red) {
+        fillrect(x, y, 10, 15, BLUE);
+      } else {
+        fillrect(x, y, 10, 15, RED);
+      }
+      is_red = !is_red;
+    }
+  }
+
   // We're done, just hang...
   hcf();
 }
