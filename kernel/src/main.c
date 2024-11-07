@@ -19,8 +19,8 @@ static volatile LIMINE_BASE_REVISION(3);
 
 __attribute__((used, section(".limine_requests")))
 static volatile struct limine_framebuffer_request framebuffer_request = {
-    .id = LIMINE_FRAMEBUFFER_REQUEST,
-    .revision = 0
+  .id = LIMINE_FRAMEBUFFER_REQUEST,
+  .revision = 0
 };
 
 // Finally, define the start and end markers for the Limine requests.
@@ -34,42 +34,40 @@ static volatile LIMINE_REQUESTS_END_MARKER;
 
 // Halt and catch fire function.
 static void hcf(void) {
-    for (;;) {
+  for (;;) {
 #if defined (__x86_64__)
-        asm ("hlt");
+    asm ("hlt");
 #elif defined (__aarch64__) || defined (__riscv)
-        asm ("wfi");
+    asm ("wfi");
 #elif defined (__loongarch64)
-        asm ("idle 0");
+    asm ("idle 0");
 #endif
-    }
+  }
 }
 
 // The following will be our kernel's entry point.
 // If renaming kmain() to something else, make sure to change the
 // linker script accordingly.
 void kmain(void) {
-    // Ensure the bootloader actually understands our base revision (see spec).
-    if (LIMINE_BASE_REVISION_SUPPORTED == false) { // TODO is bool really needed
-        hcf();
-    }
-
-    // Ensure we got a framebuffer.
-    if (framebuffer_request.response == NULL
-     || framebuffer_request.response->framebuffer_count < 1) {
-        hcf();
-    }
-
-    // Fetch the first framebuffer.
-    struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
-
-    // graphics functions
-    init_screen(framebuffer);
-    
-    fillrect(25, 150, 50, 50, WHITE); // white rectangle!
-    
-    // We're done, just hang...
+  // Ensure the bootloader actually understands our base revision (see spec).
+  if (LIMINE_BASE_REVISION_SUPPORTED == false) { // TODO is bool really needed?
     hcf();
-}
+  }
 
-// TODO retab the damn file!
+  // Ensure we got a framebuffer.
+  if (framebuffer_request.response == NULL || 
+  framebuffer_request.response->framebuffer_count < 1) {
+    hcf();
+  }
+
+  // Fetch the first framebuffer.
+  struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
+
+  // graphics functions
+  init_screen(framebuffer);
+    
+  fillrect(25, 150, 50, 50, WHITE); // white rectangle!
+    
+  // We're done, just hang...
+  hcf();
+}
