@@ -12,7 +12,7 @@
 #define GREEN (0x51b241)
 #define BLUE (0x2f92d2)
 #define WHITE (0xa4dde6)
-#define BLACK (0xffffff)
+#define BLACK (0x000000)
 
 void init_screen(struct limine_framebuffer* fb);
 uint64_t max_width(void);
@@ -20,5 +20,8 @@ uint64_t max_height(void);
 
 void putpixel(uint64_t x, uint64_t y, uint32_t color);
 void fillrect(uint64_t x, uint64_t y, uint64_t w, uint64_t h, uint32_t color);
+
+// draw an 8x8 character, TODO change name to "drawglyph"?
+void drawchar(uint8_t ch, uint64_t x, uint64_t y, uint32_t fgcolor, uint32_t bgcolor);
 
 #endif

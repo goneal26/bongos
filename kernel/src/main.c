@@ -68,17 +68,46 @@ void kmain(void) {
 
   fillrect(0, 0, max_width(), max_height(), WHITE);
 
+  /*
   bool is_red = false;
-  for (uint64_t y = 0; y < max_height() - 15; y += 15) {
-    for (uint64_t x = 0; x < max_width() - 10; x += 10) {
+  uint64_t gridw = 5;
+  uint64_t gridh = 6;
+  for (uint64_t y = 6; y < max_height() - gridh; y += gridh) {
+    for (uint64_t x = 5; x < max_width() - gridw; x += gridw) {
       if (is_red) {
-        fillrect(x, y, 10, 15, BLUE);
+        fillrect(x, y, gridw, gridh, BLUE);
       } else {
-        fillrect(x, y, 10, 15, RED);
+        fillrect(x, y, gridw, gridh, RED);
       }
       is_red = !is_red;
     }
   }
+  */
+
+  // let's see what this does!
+  uint64_t x = (max_width() / 2) - 64;
+  uint64_t y = (max_height() / 2) - 64;
+
+  for (uint8_t ch = 0; ch < 127; ch++) { // should print ascii 0-127
+    drawchar(ch, x, y, BLACK, WHITE);
+    x += 8;
+    if (ch % 8 == 0) {
+      y += 8;
+      x -= 64;
+    }
+  }
+
+  
+  char *msg = "Hello World!";
+  x = 8;
+  y = 8;
+  while (*msg) {
+    drawchar(*msg, x, y, RED, WHITE);
+    x += 8;
+    //y += 8;
+    msg += 1;
+  }
+  
 
   // We're done, just hang...
   hcf();
