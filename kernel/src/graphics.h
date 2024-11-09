@@ -24,4 +24,6 @@ void fillrect(uint64_t x, uint64_t y, uint64_t w, uint64_t h, uint32_t color);
 // draw an 8x8 character, TODO change name to "drawglyph"?
 void drawchar(uint8_t ch, uint64_t x, uint64_t y, uint32_t fgcolor, uint32_t bgcolor);
 
+
+
 #endif

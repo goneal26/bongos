@@ -66,28 +66,18 @@ void kmain(void) {
   // graphics functions
   init_screen(framebuffer);
 
-  fillrect(0, 0, max_width(), max_height(), WHITE);
+  fillrect(0, 0, max_width(), max_height(), BLACK);
 
   /*
-  bool is_red = false;
-  uint64_t gridw = 5;
-  uint64_t gridh = 6;
-  for (uint64_t y = 6; y < max_height() - gridh; y += gridh) {
-    for (uint64_t x = 5; x < max_width() - gridw; x += gridw) {
-      if (is_red) {
-        fillrect(x, y, gridw, gridh, BLUE);
-      } else {
-        fillrect(x, y, gridw, gridh, RED);
-      }
-      is_red = !is_red;
+  for (uint64_t y = 0; y < max_height(); y += 8) {
+    for (uint64_t x = 0; x < max_width(); x += 8) {
+      drawchar('@', x, y, WHITE, BLACK);
     }
   }
   */
 
-  // let's see what this does!
-  uint64_t x = (max_width() / 2) - 64;
-  uint64_t y = (max_height() / 2) - 64;
-
+  uint8_t x = 100;
+  uint8_t y = 50;
   for (uint8_t ch = 0; ch < 127; ch++) { // should print ascii 0-127
     drawchar(ch, x, y, BLACK, WHITE);
     x += 8;
@@ -96,18 +86,17 @@ void kmain(void) {
       x -= 64;
     }
   }
-
   
+  /*
   char *msg = "Hello World!";
-  x = 8;
-  y = 8;
+  
   while (*msg) {
     drawchar(*msg, x, y, RED, WHITE);
     x += 8;
     //y += 8;
     msg += 1;
   }
-  
+  */
 
   // We're done, just hang...
   hcf();
