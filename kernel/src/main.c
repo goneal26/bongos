@@ -3,7 +3,6 @@
 #include "graphics.h"
 #include <stdint.h>
 #include <stddef.h>
-#include <stdbool.h>
 
 // Set the base revision to 3, this is recommended as this is the latest
 // base revision described by the Limine boot protocol specification.
@@ -50,7 +49,7 @@ static void hcf(void) {
 // linker script accordingly.
 void kmain(void) {
   // Ensure the bootloader actually understands our base revision (see spec).
-  if (LIMINE_BASE_REVISION_SUPPORTED == false) { // TODO is bool really needed?
+  if (LIMINE_BASE_REVISION_SUPPORTED == 0) { // is "false" really needed?
     hcf();
   }
 
