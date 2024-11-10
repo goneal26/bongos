@@ -78,7 +78,7 @@ void kmain(void) {
   uint8_t x = 100;
   uint8_t y = 50;
   for (uint8_t ch = 0; ch < 127; ch++) { // should print ascii 0-127
-    drawchar(ch, x, y, BLACK, WHITE);
+    drawchar(ch, x, y, WHITE, BLACK);
     x += 8;
     if (ch % 8 == 0) {
       y += 8;

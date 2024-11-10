@@ -46,7 +46,7 @@ void fillrect(uint64_t x, uint64_t y, uint64_t w, uint64_t h, uint32_t color) {
   }
 }
 
-// draw an 8x8 character
+// draw an 8x8 character at x, y with fg and bg hex colors
 void drawchar(uint8_t ch, uint64_t x, uint64_t y, uint32_t fgcolor, uint32_t bgcolor) {
   size_t offset = y * (screen.pitch / 4) + x; // idx for top left corner
 
