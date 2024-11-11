@@ -1,6 +1,7 @@
 #include "limine.h"
 #include "memory.h"
 #include "graphics.h"
+#include "tty.h"
 #include <stdint.h>
 #include <stddef.h>
 
@@ -49,7 +50,7 @@ static void hcf(void) {
 // linker script accordingly.
 void kmain(void) {
   // Ensure the bootloader actually understands our base revision (see spec).
-  if (LIMINE_BASE_REVISION_SUPPORTED == 0) { // is "false" really needed?
+  if (LIMINE_BASE_REVISION_SUPPORTED == 0) {
     hcf();
   }
 
@@ -65,38 +66,35 @@ void kmain(void) {
   // graphics functions
   init_screen(framebuffer);
 
-  fillrect(0, 0, max_width(), max_height(), BLACK);
+  // why not, fill the screen and put a little "window" around the terminal
+  fillrect(0, 0, max_width(), max_height(), DARK_BLUE);
+  fillrect(23, 23, (max_width() / 2) + 4, (max_height() / 2) + 4, PURPLE);
+  // should give a dark blue background and a 2-pixel purple border
+  
+  // terminal!
+  init_tty(25, 25, max_width() / 2, max_height() / 2); // uses ~25% of screen
 
-  /*
-  for (uint64_t y = 0; y < max_height(); y += 8) {
-    for (uint64_t x = 0; x < max_width(); x += 8) {
-      drawchar('@', x, y, WHITE, BLACK);
-    }
-  }
-  */
-
-  uint8_t x = 100;
-  uint8_t y = 50;
-  for (uint8_t ch = 0; ch < 127; ch++) { // should print ascii 0-127
-    drawchar(ch, x, y, WHITE, BLACK);
-    x += 8;
-    if (ch % 8 == 0) {
-      y += 8;
-      x -= 64;
-    }
+  printstr("Testing ASCII rendering: \n\n");
+  
+  for (uint8_t c = '!'; c < 127; c++) { // print every visible ascii char in our font
+    printchar(c);
   }
   
-  /*
-  char *msg = "Hello World!";
-  
-  while (*msg) {
-    drawchar(*msg, x, y, RED, WHITE);
-    x += 8;
-    //y += 8;
-    msg += 1;
-  }
-  */
+  printstr("\n\nHello, terminal!\n");
+  printstr("The max screen width is: ");
+  printint(max_width(), 10);
+  printstr(" pixels.\nThe max screen height is: ");
+  printint(max_height(), 10);
+  printstr(" pixels.\n");
 
+  printstr("The screen pitch value is: ");
+  printint(framebuffer->pitch, 10);
+  printchar('\n');
+
+  printstr("There are "); 
+  printint(framebuffer_request.response->framebuffer_count, 10);
+  printstr(" total framebuffers.\n");
+  
   // We're done, just hang...
   hcf();
 }

@@ -1,5 +1,5 @@
 #ifndef GRAPHICS_H
-#define GRAPHICS_H 1
+#define GRAPHICS_H
 
 #include "limine.h"
 #include <stdint.h>
@@ -23,9 +23,9 @@
 #define DARK_PURPLE (0xb16286)
 #define DARK_AQUA (0x689d6a)
 #define DARK_WHITE (0xa89984) // barely brighter than GRAY
-#define GRAY (0x928374) 
-#define RED (0xfb4934) 
-#define GREEN (0xb8bb26) 
+#define GRAY (0x928374)
+#define RED (0xfb4934)
+#define GREEN (0xb8bb26)
 #define YELLOW (0xfabd2f)
 #define BLUE (0x83a598)
 #define PURPLE (0xd3869b) 
@@ -40,6 +40,6 @@ void putpixel(uint64_t x, uint64_t y, uint32_t color);
 void fillrect(uint64_t x, uint64_t y, uint64_t w, uint64_t h, uint32_t color);
 
 // draw an 8x8 character
-void drawchar(uint8_t ch, uint64_t x, uint64_t y, uint32_t fgcolor, uint32_t bgcolor);
+void drawchar(uint8_t ch, uint64_t x, uint64_t y, uint32_t fg, uint32_t bg);
 
 #endif

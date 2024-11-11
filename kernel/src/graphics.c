@@ -47,7 +47,7 @@ void fillrect(uint64_t x, uint64_t y, uint64_t w, uint64_t h, uint32_t color) {
 }
 
 // draw an 8x8 character at x, y with fg and bg hex colors
-void drawchar(uint8_t ch, uint64_t x, uint64_t y, uint32_t fgcolor, uint32_t bgcolor) {
+void drawchar(uint8_t ch, uint64_t x, uint64_t y, uint32_t fg, uint32_t bg) {
   size_t offset = y * (screen.pitch / 4) + x; // idx for top left corner
 
   if (ch < 32 || ch > 126) { // check ascii 0-127 (null char to delete char)
@@ -57,9 +57,9 @@ void drawchar(uint8_t ch, uint64_t x, uint64_t y, uint32_t fgcolor, uint32_t bgc
   for (uint64_t ycoord = 0; ycoord < 8; ycoord++) { // 8x8 chars
     for (uint64_t xcoord = 0; xcoord < 8; xcoord++) {
       if (Font8x8_basic[ch - 32][ycoord] & (1 << xcoord)) { // bit 1 (foreground)
-        screen.pixels[offset + xcoord] = fgcolor;
+        screen.pixels[offset + xcoord] = fg;
       } else { // bit 0 (background)
-        screen.pixels[offset + xcoord] = bgcolor;        
+        screen.pixels[offset + xcoord] = bg;        
       }
     }
     offset += screen.pitch / 4;
