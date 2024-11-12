@@ -1,5 +1,7 @@
 # BongOS -> A 64-bit hobby operating system
 
+![Temporary Logo](bongos_logo.png)
+
 *Pronounced like the drum or the drug apparatus, whichever you prefer.*
 
 Built off of the Limine bootloader C template. 
