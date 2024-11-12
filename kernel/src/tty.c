@@ -1,5 +1,6 @@
 #include "tty.h"
 #include "graphics.h"
+#include <stdarg.h> // for variable args, TODO might need to implement our own
 
 // a simple text mode for debugging- this is likely to be removed/rewritten
 // in the future in favor of a proper shell/terminal emulator and stdio support
@@ -85,15 +86,10 @@ void printint(int num, int base) { // should be able to use a plain `int`
     printchar('-');
   }
 
-  if (base == 16) {
-    printchar('0');
-    printchar('x'); // TODO add more base prefixes?
-  }
-
   char str[100]; // TODO dynamically size?
   int i = 0;
   while (num != 0) {
-    int rem = num % base; // for other bases do remainder (base)
+    int rem = num % base;
     str[i++] = (rem > 9) ? (rem - 10) + 'a' : rem + '0';
     num = num / base;
   }
@@ -116,4 +112,132 @@ void printint(int num, int base) { // should be able to use a plain `int`
   printstr(str);
 }
 
-// TODO format strings?
+void printaddr(void* ptr) { // prints a pointer as a hex value
+  uint64_t num = (uint64_t) ptr;
+
+  if (!ptr) { // is null
+    printstr("NULL");
+    return;
+  }
+  
+  char str[100]; // TODO dynamically size?
+  int i = 0;
+  while (num != 0) {
+    int rem = num % 16;
+    str[i++] = (rem > 9) ? (rem - 10) + 'A' : rem + '0'; // capital letters for pointers
+    num = num / 16;
+  }
+  
+  // put null char at the end
+  str[i] = '\0';
+  
+  // now `str` holds the hex digits, but reversed, so we reverse:
+  int start = 0;
+  int end = i - 1;
+  while (start < end) {
+    char temp = str[start];
+    str[start] = str[end];
+    str[end] = temp;
+    end--;
+    start++;
+  }
+  
+  // and then print `str`
+  printstr(str);
+}
+
+// formatted printing! At least, it's a start.
+void print(char* fmt, ...) {
+  unsigned int i;
+  char *s;
+  void *p;
+  
+  va_list args; // init arguments
+  va_start(args, fmt);
+  
+  while (*fmt) {
+    if (*fmt == '%') { // is format specifier
+      switch (*(fmt + 1)) { // switch for next char
+        case 'c': 
+          i = va_arg(args, int); // fetch char arg
+          printchar(i);
+          break;
+        case 'd':
+          i = va_arg(args, int); // int arg as decimal
+          printint(i, 10);
+          break;
+        case 'x':
+          i = va_arg(args, int); // int arg as hex
+          printint(i, 16);
+          break;
+        case 's':
+          s = va_arg(args, char*); // get string
+          printstr(s);
+          break;
+        case 'p':
+          p = va_arg(args, void*); // get ptr
+          printaddr(p);
+          break;
+        case '%':
+          printchar('%');
+          break;
+        default: // unsupported fmt specifier- just print the character for now
+          printstr("FMTERR"); return;
+      }
+      fmt += 2;
+    } else {
+      printchar(*fmt);
+      fmt++;
+    }
+  }
+  va_end(args);
+}
+
+// literally just print but with with a newline after it
+void println(char* fmt, ...) {
+  unsigned int i;
+  char *s;
+  void *p;
+  
+  va_list args; // init arguments
+  va_start(args, fmt);
+  
+  while (*fmt) {
+    if (*fmt == '%') { // is format specifier
+      switch (*(fmt + 1)) { // switch for next char
+        case 'c': 
+          i = va_arg(args, int); // fetch char arg
+          printchar(i);
+          break;
+        case 'd':
+          i = va_arg(args, int); // int arg as decimal
+          printint(i, 10);
+          break;
+        case 'x':
+          i = va_arg(args, int); // int arg as hex
+          printint(i, 16);
+          break;
+        case 's':
+          s = va_arg(args, char*); // get string
+          printstr(s);
+          break;
+        case 'p':
+          p = va_arg(args, void*); // get ptr
+          printaddr(p);
+          break;
+        case '%':
+          printchar('%');
+          break;
+        default: // unsupported fmt specifier- just print the character for now
+          printstr("FMTERR"); return;
+      }
+      fmt += 2;
+    } else {
+      printchar(*fmt);
+      fmt++;
+    }
+  }
+  va_end(args);
+
+  printchar('\n');
+}

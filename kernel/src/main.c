@@ -23,6 +23,12 @@ static volatile struct limine_framebuffer_request framebuffer_request = {
   .revision = 0
 };
 
+__attribute__((used, section(".limine_requests")))
+static volatile struct limine_bootloader_info_request bootloader_info_request = {
+  .id = LIMINE_BOOTLOADER_INFO_REQUEST,
+  .revision = 1 // right?
+};
+
 // Finally, define the start and end markers for the Limine requests.
 // These can also be moved anywhere, to any .c file, as seen fit.
 
@@ -60,40 +66,34 @@ void kmain(void) {
     hcf();
   }
 
-  // Fetch the first framebuffer.
+  // get some info about the bootloader
+  if (bootloader_info_request.response == NULL) {
+    hcf();
+  }
+
+  // Fetch the first (and only?) framebuffer.
   struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
 
-  // graphics functions
+  // setup screen + tty
   init_screen(framebuffer);
-
-  // why not, fill the screen and put a little "window" around the terminal
   fillrect(0, 0, max_width(), max_height(), DARK_BLUE);
-  fillrect(23, 23, (max_width() / 2) + 4, (max_height() / 2) + 4, PURPLE);
-  // should give a dark blue background and a 2-pixel purple border
-  
-  // terminal!
-  init_tty(25, 25, max_width() / 2, max_height() / 2); // uses ~25% of screen
+  fillrect(2, 2, max_width() - 4, max_height() - 4, BLACK);
+  init_tty(3, 3, max_width() - 6, max_height() - 6); // uses ~25% of screen
 
-  printstr("Testing ASCII rendering: \n\n");
-  
-  for (uint8_t c = '!'; c < 127; c++) { // print every visible ascii char in our font
-    printchar(c);
-  }
-  
-  printstr("\n\nHello, terminal!\n");
-  printstr("The max screen width is: ");
-  printint(max_width(), 10);
-  printstr(" pixels.\nThe max screen height is: ");
-  printint(max_height(), 10);
-  printstr(" pixels.\n");
+  // put whatever printing functions you want below!
 
-  printstr("The screen pitch value is: ");
-  printint(framebuffer->pitch, 10);
-  printchar('\n');
+  // bootloader info
+  println("Bootloader name: \"%s\"", bootloader_info_request.response->name);
+  println("Bootloader version: \"%s\"\n", bootloader_info_request.response->version);
 
-  printstr("There are "); 
-  printint(framebuffer_request.response->framebuffer_count, 10);
-  printstr(" total framebuffers.\n");
+  // framebuffer info
+  println("Total framebuffer count: %d\n", framebuffer_request.response->framebuffer_count);
+  println("Framebuffer info: ");
+  println("Address: %p", framebuffer->address);
+  println("Width: %d pixels", framebuffer->width);
+  println("Height: %d pixels", framebuffer->height);
+  println("Pitch (bytes per row): %d", framebuffer->pitch);
+  println("BPP (bits per pixel): %d", framebuffer->bpp);
   
   // We're done, just hang...
   hcf();

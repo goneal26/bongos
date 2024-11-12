@@ -1,6 +1,6 @@
 # BongOS -> A 64-bit hobby operating system
 
-*Pronounced* "bongos" *or* "bong os" *if you want.*
+*Pronounced like the drum or the drug apparatus, whichever you prefer.*
 
 Built off of the Limine bootloader C template. 
 
@@ -9,8 +9,9 @@ Built off of the Limine bootloader C template.
 - [x] Limine Bare Bones Kernel & build system
 - [x] VGA graphics interfacing
 - [x] Basic font rendering (8x8 font)
-- [ ] Basic text buffer display + formatted printing
-- [ ] Getting and displaying hardware info 
+- [x] Basic text buffer display + formatted printing
+- [ ] Getting and displaying hardware info (memory layout, tables, etc)
+- [ ] (Keyboard) interrupt handling
 
 ## Dependencies
 

@@ -7,5 +7,8 @@ void init_tty(uint64_t cx, uint64_t cy, uint64_t w, uint64_t h);
 void printchar(char c);
 void printstr(const char* str);
 void printint(int num, int base);
+void printaddr(void* ptr);
+void print(char* fmt, ...);
+void println(char* fmt, ...);
 
 #endif
