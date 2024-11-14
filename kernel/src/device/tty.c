@@ -1,23 +1,23 @@
 #include "tty.h"
-#include "graphics.h"
+#include "framebuffer.h"
 #include <stdarg.h> // for variable args, TODO might need to implement our own
 
 // a simple text mode for debugging- this is likely to be removed/rewritten
 // in the future in favor of a proper shell/terminal emulator and stdio support
 
 typedef struct {
-  uint64_t width;
-  uint64_t height;
-  uint64_t cornerx;
-  uint64_t cornery;
-  uint64_t cursorx;
-  uint64_t cursory;
+  uint32_t width;
+  uint32_t height;
+  uint32_t cornerx;
+  uint32_t cornery;
+  uint32_t cursorx;
+  uint32_t cursory;
 } Terminal;
 
 Terminal terminal;
 
 // start the tty terminal, drawing it at x, y (being the top-left coords)
-void init_tty(uint64_t cx, uint64_t cy, uint64_t w, uint64_t h) {
+void init_tty(uint32_t cx, uint32_t cy, uint32_t w, uint32_t h) {
   terminal.width = w;
   terminal.height = h;
   terminal.cornerx = cx;
@@ -26,10 +26,7 @@ void init_tty(uint64_t cx, uint64_t cy, uint64_t w, uint64_t h) {
   terminal.cursory = cy;
 
   // fill the terminal with background color
-  fillrect(cx, cy, w, h, BLACK);
-
-  // draw the cursor for debugging
-  // drawchar('|', cx, cy, GRAY, BLACK);
+  fb_rect(cx, cy, w, h, GB_BLACK);
 }
 
 // advances the cursor
@@ -61,7 +58,7 @@ void printchar(char c) {
     return;
   }
 
-  drawchar(c, terminal.cursorx, terminal.cursory, WHITE, BLACK);
+  fb_char(c, terminal.cursorx, terminal.cursory, GB_WHITE, GB_BLACK);
   
   advance();
 }
