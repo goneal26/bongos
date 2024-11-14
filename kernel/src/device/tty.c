@@ -1,6 +1,6 @@
 #include "tty.h"
 #include "framebuffer.h"
-#include <stdarg.h> // for variable args, TODO might need to implement our own
+#include <stdarg.h> // for variable args, TODO might need to implement our own?
 
 // a simple text mode for debugging- this is likely to be removed/rewritten
 // in the future in favor of a proper shell/terminal emulator and stdio support
@@ -38,7 +38,6 @@ static void advance() {
     terminal.cursorx += 8;
   }
 
-  // drawchar('|', terminal.cursorx, terminal.cursory, GRAY, BLACK);
 }
 
 static void nextline() {
@@ -48,7 +47,7 @@ static void nextline() {
 }
 
 // print char at cursor position, then advance cursor
-void printchar(char c) {
+static void printchar(char c) {
   if (c == 0) {
     return; // don't advance cursor for nullchar
   }
@@ -64,7 +63,7 @@ void printchar(char c) {
 }
 
 // print an unformatted string (array of char), basically just `puts()`
-void printstr(const char* str) {
+static void printstr(const char* str) {
   while (*str) {
     printchar(*str);
     str++;
@@ -73,7 +72,7 @@ void printstr(const char* str) {
 
 // print a single integer as a hexadecimal string
 // basically just `itoa()`
-void printint(int num, int base) { // should be able to use a plain `int`
+static void printint(int num, int base) { // should be able to use a plain `int`
   if (num == 0) {
     printchar('0');
     return;
@@ -109,7 +108,7 @@ void printint(int num, int base) { // should be able to use a plain `int`
   printstr(str);
 }
 
-void printaddr(void* ptr) { // prints a pointer as a hex value
+static void printaddr(void* ptr) { // prints a pointer as a hex value
   uint64_t num = (uint64_t) ptr;
 
   if (!ptr) { // is null
@@ -121,7 +120,8 @@ void printaddr(void* ptr) { // prints a pointer as a hex value
   int i = 0;
   while (num != 0) {
     int rem = num % 16;
-    str[i++] = (rem > 9) ? (rem - 10) + 'A' : rem + '0'; // capital letters for pointers
+    str[i++] = (rem > 9) ? (rem - 10) + 'A' : rem + '0'; 
+    // ^^^ capital letters for pointers
     num = num / 16;
   }
   
