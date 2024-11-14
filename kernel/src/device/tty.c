@@ -72,7 +72,7 @@ static void printstr(const char* str) {
 
 // print a single integer as a hexadecimal string
 // basically just `itoa()`
-static void printint(int num, int base) { // should be able to use a plain `int`
+static void printint(int64_t num, int base) { // should be able to use a plain `int`
   if (num == 0) {
     printchar('0');
     return;
@@ -143,14 +143,14 @@ static void printaddr(void* ptr) { // prints a pointer as a hex value
   printstr(str);
 }
 
-// formatted printing! At least, it's a start.
-void print(char* fmt, ...) {
+// uses a variadic list pointer to do some formatted printing!
+static void vprint(char *fmt, va_list ap) {
   unsigned int i;
   char *s;
   void *p;
   
   va_list args; // init arguments
-  va_start(args, fmt);
+  va_copy(args, ap);
   
   while (*fmt) {
     if (*fmt == '%') { // is format specifier
@@ -190,51 +190,18 @@ void print(char* fmt, ...) {
   va_end(args);
 }
 
-// literally just print but with with a newline after it
-void println(char* fmt, ...) {
-  unsigned int i;
-  char *s;
-  void *p;
-  
-  va_list args; // init arguments
+// formatted printing! At least, it's a start.
+void print(char* fmt, ...) {
+  va_list args;
   va_start(args, fmt);
-  
-  while (*fmt) {
-    if (*fmt == '%') { // is format specifier
-      switch (*(fmt + 1)) { // switch for next char
-        case 'c': 
-          i = va_arg(args, int); // fetch char arg
-          printchar(i);
-          break;
-        case 'd':
-          i = va_arg(args, int); // int arg as decimal
-          printint(i, 10);
-          break;
-        case 'x':
-          i = va_arg(args, int); // int arg as hex
-          printint(i, 16);
-          break;
-        case 's':
-          s = va_arg(args, char*); // get string
-          printstr(s);
-          break;
-        case 'p':
-          p = va_arg(args, void*); // get ptr
-          printaddr(p);
-          break;
-        case '%':
-          printchar('%');
-          break;
-        default: // unsupported fmt specifier- just print the character for now
-          printstr("FMTERR"); return;
-      }
-      fmt += 2;
-    } else {
-      printchar(*fmt);
-      fmt++;
-    }
-  }
+  vprint(fmt, args);
   va_end(args);
+}
 
+void println(char* fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  vprint(fmt, args);
   printchar('\n');
+  va_end(args);
 }

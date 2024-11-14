@@ -12,8 +12,8 @@ Built off of the Limine bootloader C template.
 - [x] VGA graphics interfacing
 - [x] Basic font rendering (8x8 font)
 - [x] Basic text buffer display + formatted printing
-- [ ] Getting and displaying hardware info (memory layout, tables, etc)
-- [ ] (Keyboard) interrupt handling
+- [x] Getting and displaying hardware info (memory layout, tables, etc)
+- [ ] Interrupt handling and keyboard input
 
 ## Dependencies
 
