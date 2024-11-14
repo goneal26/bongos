@@ -5,18 +5,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
+// initializing stuff for Limine:
+
 __attribute__((used, section(".limine_requests")))
 static volatile LIMINE_BASE_REVISION(3);
-
-__attribute__((used, section(".limine_requests")))
-static volatile struct limine_bootloader_info_request bootloader_info_request = {
-  .id = LIMINE_BOOTLOADER_INFO_REQUEST,
-  .revision = 1 // right?
-};
-
-// Finally, define the start and end markers for the Limine requests.
-// These can also be moved anywhere, to any .c file, as seen fit.
-// TODO move these?
 
 __attribute__((used, section(".limine_requests_start")))
 static volatile LIMINE_REQUESTS_START_MARKER;
@@ -44,11 +36,6 @@ void kmain(void) {
     hcf();
   }
 
-  // get some info about the bootloader
-  if (bootloader_info_request.response == NULL) {
-    hcf();
-  }
-
   // setup screen + tty
   init_fb();
   fb_clear(GB_DARK_BLUE);
@@ -56,10 +43,6 @@ void kmain(void) {
   init_tty(3, 3, fb_width() - 6, fb_height() - 6); // uses ~25% of screen
 
   // put whatever printing functions you want below!
-
-  // bootloader info
-  println("Bootloader name: \"%s\"", bootloader_info_request.response->name);
-  println("Bootloader version: \"%s\"\n", bootloader_info_request.response->version);
 
   // framebuffer info
   println("Framebuffer info: ");
