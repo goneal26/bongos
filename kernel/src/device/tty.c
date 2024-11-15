@@ -2,6 +2,10 @@
 #include "framebuffer.h"
 #include <stdarg.h> // for variable args, TODO might need to implement our own?
 
+#define DEFAULT_FG (GB_WHITE)
+#define DEFAULT_BG (GB_BLACK)
+// ^ default foreground and background colors for characters
+
 // a simple text mode for debugging- this is likely to be removed/rewritten
 // in the future in favor of a proper shell/terminal emulator and stdio support
 
@@ -12,6 +16,8 @@ typedef struct {
   uint32_t cornery;
   uint32_t cursorx;
   uint32_t cursory;
+  uint32_t cursorfg;
+  uint32_t cursorbg;
 } Terminal;
 
 Terminal terminal;
@@ -24,9 +30,16 @@ void init_tty(uint32_t cx, uint32_t cy, uint32_t w, uint32_t h) {
   terminal.cornery = cy;
   terminal.cursorx = cx;
   terminal.cursory = cy;
+  terminal.cursorfg = DEFAULT_FG;
+  terminal.cursorbg = DEFAULT_BG;
 
   // fill the terminal with background color
-  fb_rect(cx, cy, w, h, GB_BLACK);
+  fb_rect(cx, cy, w, h, DEFAULT_BG);
+}
+
+void set_cursor_color(uint32_t fg, uint32_t bg) {
+  terminal.cursorfg = fg;
+  terminal.cursorbg = bg;
 }
 
 // advances the cursor
@@ -43,7 +56,6 @@ static void advance() {
 static void nextline() {
   terminal.cursory += 8; // TODO reaching max terminal height?
   terminal.cursorx = terminal.cornerx;
-  // drawchar('|', terminal.cursorx, terminal.cursory, GRAY, BLACK);
 }
 
 // print char at cursor position, then advance cursor
@@ -57,8 +69,15 @@ static void printchar(char c) {
     return;
   }
 
-  fb_char(c, terminal.cursorx, terminal.cursory, GB_WHITE, GB_BLACK);
+  fb_char(c, terminal.cursorx, terminal.cursory, terminal.cursorfg, terminal.cursorbg);
   
+  advance();
+}
+
+// debug printing a color char
+void printcolor(uint32_t color) {
+  // note: foreground irrelevant, only background is visible
+  fb_char(' ', terminal.cursorx, terminal.cursory, 0, color);
   advance();
 }
 
@@ -146,6 +165,7 @@ static void printaddr(void* ptr) { // prints a pointer as a hex value
 // uses a variadic list pointer to do some formatted printing!
 static void vprint(char *fmt, va_list ap) {
   unsigned int i;
+  uint32_t hexcode;
   char *s;
   void *p;
   
@@ -158,6 +178,17 @@ static void vprint(char *fmt, va_list ap) {
         case 'c': 
           i = va_arg(args, int); // fetch char arg
           printchar(i);
+          break;
+        case 'q': // set foreground color to passed hex value 
+          hexcode = va_arg(args, uint32_t);
+          set_cursor_color(hexcode, terminal.cursorbg);
+          break;
+        case 'Q': // set background color to passed hex value
+          hexcode = va_arg(args, uint32_t);
+          set_cursor_color(terminal.cursorfg, hexcode);
+          break;
+        case '!': // reset to default fg and bg color
+          set_cursor_color(DEFAULT_FG, DEFAULT_BG);
           break;
         case 'd':
           i = va_arg(args, int); // int arg as decimal

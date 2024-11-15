@@ -49,8 +49,7 @@ void kmain(void) {
   println("Height: %d pixels", fb_height());
   println("Pitch (bytes per row): %d", fb_pitch());
   println("BPP (bits per pixel): %d", fb_bpp());
-  println("\nEasy like sunday morning!\n");
-
+  
   // now let's get that hardware info from bootloader.c
   println("Hardware info provided by bootloader:");
   println("Bootloader name: %s", bl_get_bootloader_name());
@@ -67,7 +66,61 @@ void kmain(void) {
   println("LAPIC ID: %d", bl_get_bsp_lapic_id());
   println("x2apic flags: %x", bl_is_x2apic());
   println("RSDP address: %p", bl_get_rsdp_address());
+
+  println("\nColors:");
+
+  // in rainbows album cover colors
+  printcolor(IR_YELLOW);
+  printcolor(IR_BLUE);
+  printcolor(IR_ORANGE);
+  printcolor(IR_GREEN);
+  printcolor(IR_BROWN);
+  printcolor(IR_RED);
+  printcolor(IR_CYAN);
+  println("");
   
+  // gruvbox dark palette inspired colors
+  printcolor(GB_BLACK);
+  printcolor(GB_DARK_RED);
+  printcolor(GB_DARK_GREEN);
+  printcolor(GB_DARK_YELLOW);
+  printcolor(GB_DARK_BLUE);
+  printcolor(GB_DARK_PURPLE);
+  printcolor(GB_DARK_AQUA);
+  printcolor(GB_DARK_WHITE); // barely brighter than GB_GRAY
+  printcolor(GB_GRAY);
+  printcolor(GB_RED);
+  printcolor(GB_GREEN);
+  printcolor(GB_YELLOW);
+  printcolor(GB_BLUE);
+  printcolor(GB_PURPLE);
+  printcolor(GB_AQUA);
+  printcolor(GB_WHITE);
+
+  println("\n\nPrinting with color specifiers (`%%Q`, `%%q`, and `%%!`):\n");
+
+  println("%Q              %!", 0);
+  println("%q%Q IN/ RAINBOWS %!", IR_YELLOW, 0);
+  println("%q%Q IN RAIN/BOWS %!", IR_BLUE, 0);
+  println("%q%Q IN RAINBOW/S %!", IR_ORANGE, 0);
+  println("%q%Q IN RAINBOWS/ %!", IR_GREEN, 0);
+  println("%q%Q IN RAIN_BOWS %!", IR_BROWN, 0);
+  println("%q%Q RA D IOHEA_D %!", IR_RED, 0);
+  println("%q%Q _RAD IO HEAD %!", IR_CYAN, 0);
+  println("%Q              %!", 0);
+  println("");
+
+  println("\nMini palette:\n");
+  uint32_t h = 0;
+  for (int y = 0; y < 12; y++) {
+    for (int x = 0; x < 12; x++) {
+      printcolor(h);
+      h += (0xffffff + 1) / 144;
+    }
+    println("");
+  }
+
+
   // We're done, just hang...
   hcf();
 }
