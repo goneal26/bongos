@@ -4,8 +4,9 @@
 
 Pronounced like the drum or the drug apparatus, whichever you prefer.
 
-Originally built from the Limine Bootloader template in C, this project has been
-rewritten in Rust, following along with the 
+Originally built from the 
+[Limine Bootloader template in C](https://github.com/limine-bootloader/limine-c-template), 
+this project has been rewritten in Rust, following along with the 
 [Writing an OS in Rust](https://os.phil-opp.com/) tutorial. 
 
 The project's codebase diverges from 
