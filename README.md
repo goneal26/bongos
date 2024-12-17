@@ -4,53 +4,72 @@
 
 Pronounced like the drum or the drug apparatus, whichever you prefer.
 
-Built off of the Limine bootloader C template. 
+Originally built from the Limine Bootloader template in C, this project has been
+rewritten in Rust, following along with the 
+[Writing an OS in Rust](https://os.phil-opp.com/) tutorial. 
+
+The project's codebase diverges from 
+[this point](https://github.com/phil-opp/blog_os/tree/post-02) in the tutorial's
+codebase.
 
 ## Roadmap
 
-- [x] Limine Bare Bones Kernel & build system
-- [x] VGA graphics interfacing
-- [x] Basic font rendering (8x8 font)
-- [x] Basic text buffer display + formatted printing
-- [x] Getting and displaying hardware info (memory layout, tables, etc)
+- [x] Freestanding Rust binary and build system
+- [x] VGA text mode interfacing
+- [x] Basic font rendering
+- [ ] Basic text buffer display + formatted printing
+- [ ] Getting and displaying hardware info (memory layout, tables, etc)
 - [ ] Interrupt handling and keyboard input
 
-## Dependencies
+## Building
 
-Any `make` command depends on GNU make (`gmake`) and is expected to be run using
-it. This usually means using `make` on most GNU/Linux distros, or `gmake` on 
-other non-GNU systems.
+This project requires a nightly version of Rust because it uses some unstable 
+features. At least nightly _2020-07-15_ is required for building. You might need 
+to run `rustup update nightly --force` to update to the latest nightly even if 
+some components such as `rustfmt` are missing it.
 
-It is recommended to build this project using a standard UNIX-like system, using
-a Clang/LLVM toolchain capable of cross compilation (the default, unless `KCC`
-and/or `KLD` are explicitly set).
+You can build the project by running:
 
-Additionally, building an ISO with `make all` requires `xorriso`, and building a
-HDD/USB image with `make all-hdd` requires `sgdisk` (usually from `gdisk` or 
-`gptfdisk` packages) and `mtools`.
+```
+cargo build
+```
 
-## Architectural targets
+To create a bootable disk image from the compiled kernel, you need to install 
+the [`bootimage`] tool:
 
-The `KARCH` make variable determines the target architecture to build the kernel
-and image for.
+[`bootimage`]: https://github.com/rust-osdev/bootimage
 
-The default `KARCH` is `x86_64`. Other options include: `aarch64`, 
-`loongarch64`, and `riscv64`.
+```
+cargo install bootimage
+```
 
-## Makefile targets
+After installing, you can create the bootable disk image by running:
 
-Running `make all` will compile the kernel (from the `kernel/` directory) and 
-then generate a bootable ISO image.
+```
+cargo bootimage
+```
 
-Running `make all-hdd` will compile the kernel and then generate a raw image 
-suitable to be flashed onto a USB stick or hard drive/SSD.
+This creates a bootable disk image in the `target/x86_64-bongos/debug` 
+directory.
 
-Running `make run` will build the kernel and a bootable ISO (equivalent to make 
-all) and then run it using `qemu` (if installed).
+## Running
 
-Running `make run-hdd` will build the kernel and a raw HDD image (equivalent to 
-make all-hdd) and then run it using `qemu` (if installed).
+You can run the disk image in [QEMU] through:
 
-For x86_64, the `run-bios` and `run-hdd-bios` targets are equivalent to their 
-non `-bios` counterparts except that they boot `qemu` using the default SeaBIOS 
-firmware instead of OVMF.
+[QEMU]: https://www.qemu.org/
+
+```
+cargo run
+```
+
+[QEMU] and the [`bootimage`] tool need to be installed for this.
+
+You can also write the image to an USB stick for booting it on a real machine. 
+On Linux, the command for this is:
+
+```
+dd if=target/x86_64-bongos/debug/bootimage-bongos.bin of=/dev/sdX && sync
+```
+
+Where `sdX` is the device name of your USB stick. **Be careful** to choose the 
+correct device name, because everything on that device is overwritten.
