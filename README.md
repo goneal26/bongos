@@ -18,7 +18,7 @@ codebase.
 - [x] Freestanding Rust binary and build system
 - [x] VGA text mode interfacing
 - [x] Basic font rendering
-- [ ] Basic text buffer display + formatted printing
+- [x] Basic text buffer display + formatted printing
 - [ ] Getting and displaying hardware info (memory layout, tables, etc)
 - [ ] Interrupt handling and keyboard input
 
